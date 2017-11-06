@@ -13,7 +13,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #
-# Name			: O*** Install
+# Name			: create_ovs_bridges.sh
 # Description	: Script for installing and Configuring OpenvSwitch based SDN
 #
 # Created by    : Muhammad Usman
@@ -21,28 +21,20 @@
 # Last Update	: November, 2017
 #
 
-#Run these steps manually
 #Before execution set these parameters carefully 
-SITE=GIST3
-BRCAP_DPID=3333333333333313
-BRDEV_DPID=1111111111111113
-BRSDX_DPID=5555555555555513
+SITE=
+BRCAP_DPID=
+BRDEV_DPID=
+BRSDX_DPID=
 
-DP_IF=eth2
-DP_GW=61.252.52.1
-DP_IF_IP=61.252.52.13
-DP_IF_MASK=255.255.255.0
+OPS_CONTROLLER=
+DEV_CONTROLLER=
+SDX_CONTROLLER=
 
-OPS_CONTROLLER=103.22.221.149
-DEV_CONTROLLER=103.22.221.150
-SDX_CONTROLLER=103.22.221.35
-
-OVSVM_IP=103.22.221.28
+OVSVM_IP=192.168.122.101
 OVSVM_PASSWORD=netmedia
 
-OS_CONTROLLER=103.22.221.74
-OS_CONTROLLER_PASS='fn!xo!ska!'
-
+# This script must be executed by root user
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
    exit 1
