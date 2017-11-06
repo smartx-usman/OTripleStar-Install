@@ -38,10 +38,40 @@ controller_pwd=
 PASSWORD=secrete
 region=
 
+# This script must be executed by root user
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
    exit 1
 fi
+
+
+OS_VERSION=`lsb_release -a`
+echo -e "Detected OS version: \n$OS_VERSION"
+
+if echo $OS_VERSION | grep -iq "14.04"; then
+	OS_VERSION=14
+else
+	OS_VERSION=16
+fi
+
+#read -p "Is it fresh install/Updated version of Ubuntu 16.04.3 yes/no? " yn
+case $OS_VERSION in
+	16 )update_package
+		install_env_software
+		install_glance
+		install_nova
+		install_neutron
+	;;
+	14 ) read -p "Previous OpenStack devstack insatllation Exists (yes/no)? " yn
+		case $yn in
+			[Yy]* ) remove_openstack;;
+			[Nn]* ) update_os;;
+			* ) echo "Please answer yes or no.";;
+		esac
+	;;
+	* ) echo "Please answer yes or no.";;
+esac
+
 
 # Function to remove old OpenStack installation (Juno Devstack)
 remove_openstack(){
@@ -708,40 +738,7 @@ EOF
 
 }
 
+echo "|******************************************************************| "
+echo "|                   Installation Completed.                        | "
+echo "|******************************************************************| "
 
-echo "|******************************************************************| "
-echo "|              Please Select the Installation Type                 | "
-echo "|******************************************************************| "
-echo "| 1. Over existing SmartX Box with Already OpenStack Juno          |"
-echo "| 2. Over existing SmartX Box with Ubuntu 14 and without OpenStack |"
-echo "| 3. Over new/existing SmartX Box with Already Ubuntu 16.04.3      |"
-echo "|******************************************************************| "
-read -p "Enter your choice: " option
-echo "You entered: $option"
-case $option in
-	1) 	remove_openstack
-		update_os
-		update_package
-		install_env_software
-		install_glance
-		#install_heat
-		install_nova
-		install_neutron
-		;;
-	2)	update_os
-		update_package
-		install_env_software
-		install_glance
-		#install_heat
-		install_nova
-		install_neutron
-		;;
-	3)	update_package
-		install_env_software
-		install_glance
-		install_nova
-		install_neutron
-		;;
-	*) echo "Invalid Choice. Please corrent and try again."
-		;;
-esac
