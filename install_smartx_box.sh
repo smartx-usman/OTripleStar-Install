@@ -45,34 +45,6 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 
-OS_VERSION=`lsb_release -a`
-echo -e "Detected OS version: \n$OS_VERSION"
-
-if echo $OS_VERSION | grep -iq "14.04"; then
-	OS_VERSION=14
-else
-	OS_VERSION=16
-fi
-
-#read -p "Is it fresh install/Updated version of Ubuntu 16.04.3 yes/no? " yn
-case $OS_VERSION in
-	16 )update_package
-		install_env_software
-		install_glance
-		install_nova
-		install_neutron
-	;;
-	14 ) read -p "Previous OpenStack devstack insatllation Exists (yes/no)? " yn
-		case $yn in
-			[Yy]* ) remove_openstack;;
-			[Nn]* ) update_os;;
-			* ) echo "Please answer yes or no.";;
-		esac
-	;;
-	* ) echo "Please answer yes or no.";;
-esac
-
-
 # Function to remove old OpenStack installation (Juno Devstack)
 remove_openstack(){
 su stack
@@ -735,9 +707,38 @@ ssh $controller_user@$controller_ip << EOF
 openstack --os-region-name $region network create public --share --external --provider-physical-network external --provider-network-type flat
 openstack --os-region-name $region subnet create --network public --subnet-range $FLOATING_IP_NETWORK public_subnet --allocation-pool start=$FLOATING_IP_START,end=$FLOATING_IP_END --dns-nameserver 8.8.8.8 --gateway $FLOATING_IP_PUBLIC_GATEWAY
 EOF
-
 }
 
+
+OS_VERSION=`lsb_release -a`
+echo -e "Detected OS version: \n$OS_VERSION"
+
+if echo $OS_VERSION | grep -iq "14.04"; then
+	OS_VERSION=14
+else
+	OS_VERSION=16
+fi
+
+#read -p "Is it fresh install/Updated version of Ubuntu 16.04.3 yes/no? " yn
+case $OS_VERSION in
+	16 )update_package
+		install_env_software
+		install_glance
+		install_nova
+		install_neutron
+	;;
+	14 ) read -p "Previous OpenStack devstack insatllation Exists (yes/no)? " yn
+		case $yn in
+			[Yy]* ) remove_openstack
+			;;
+			[Nn]* ) update_os
+			;;
+			* ) echo "Please answer yes or no."
+			;;
+		esac
+	;;
+	* ) echo "Please answer yes or no.";;
+esac
 echo "|******************************************************************| "
 echo "|                   Installation Completed.                        | "
 echo "|******************************************************************| "
