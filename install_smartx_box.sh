@@ -727,7 +727,7 @@ case $OS_VERSION in
 		install_nova
 		install_neutron
 	;;
-	14 ) read -p "Previous OpenStack devstack insatllation Exists (yes/no)? " yn
+	14 ) read -p "Previous OpenStack devstack instllation Exists (yes/no)? " yn
 		case $yn in
 			[Yy]* ) remove_openstack
 			;;
