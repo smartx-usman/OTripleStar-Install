@@ -25,11 +25,11 @@
 M_IP=
 C_INTERFACE=eth1
 C_IP=
-C_NETMASK=255.255.255.0
-FLOATING_IP_NETWORK=192.168.1.0/24
-FLOATING_IP_START=192.168.1.86
-FLOATING_IP_END=192.168.1.95
-FLOATING_IP_PUBLIC_GATEWAY=192.168.1.1
+C_NETMASK=
+FLOATING_IP_NETWORK=
+FLOATING_IP_START=
+FLOATING_IP_END=
+FLOATING_IP_PUBLIC_GATEWAY=
 
 controller_ip=
 controller_user=
@@ -37,9 +37,6 @@ controller_pwd=
 
 PASSWORD=secrete
 region=
-
-
-#echo "stack ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/stack
 
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
@@ -49,14 +46,17 @@ fi
 # Function to remove old OpenStack installation (Juno Devstack)
 remove_openstack(){
 su stack
+
 cd /opt/devstack
 ./unstack.sh
 ./clean.sh
+
 cd ..
 rm -rf devstack
 sudo rm -rf /opt/stack
 sudo rm -rf /usr/local/bin/
 sudo rm -rf /usr/local/lib/python2.7/dist-packages/*
+
 ovs-vsctl del-br brvlan
 ovs-vsctl del-br br-tun
 ovs-vsctl del-br br-int
@@ -64,20 +64,26 @@ ovs-vsctl del-br br-ex
 
 apt-get -y autoremove
 exit
+echo "Successfully Removed Existing Installation of OpenStack. \n"
+echo "System is going to Restart in 10sec. \n"
+sleep 10
 sudo init 6
 }
 
 
 # Function to Upgrade OS to Ubuntu 16.04 from Ubuntu 14.04
 updateos(){
-apt-get update
-apt-get upgrade
-apt-get dist-upgrade
+apt-get -y update && apt-get -y upgrade
+apt-get -y dist-upgrade
 do-release-upgrade
 
 # Update kernel version to support IO Visor
 apt-get install --install-recommends linux-generic-hwe-16.04 xserver-xorg-hwe-16.04
 apt install linux-headers-generic-hwe-16.04
+
+echo "Successfully Upgrade OS to Ubuntu 16.04.3. \n"
+echo "System is going to Restart in 10sec. \n"
+sleep 10
 init 6
 }
 
