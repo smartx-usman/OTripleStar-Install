@@ -31,6 +31,10 @@ OPS_CONTROLLER=
 DEV_CONTROLLER=
 SDX_CONTROLLER=
 
+Box_DP_IP=
+GIST_DP_IP=
+MYREN_DP_IP=
+
 OVSVM_IP=192.168.122.101
 OVSVM_PASSWORD=netmedia
 
@@ -88,55 +92,31 @@ sleep 3
 sudo ovs-vsctl show
 
 if [ $SITE = "GIST" ]; then
-#sudo ovs-vsctl add-port brdev MYREN
-#sudo ovs-vsctl set Interface MYREN type=patch
-#sudo ovs-vsctl set Interface MYREN options:peer=C_MYREN
-
 sudo ovs-vsctl add-port brdev PH
 sudo ovs-vsctl set Interface PH type=patch
 sudo ovs-vsctl set Interface PH options:peer=C_PH
-
-#sudo ovs-vsctl add-port brcap C_MYREN
-#sudo ovs-vsctl set Interface C_MYREN type=patch
-#sudo ovs-vsctl set Interface C_MYREN options:peer=MYREN
 
 sudo ovs-vsctl add-port brcap C_PH
 sudo ovs-vsctl set Interface C_PH type=patch
 sudo ovs-vsctl set Interface C_PH options:peer=PH
 
-#sudo ovs-vsctl add-port brcap ovs_vxlan_MYREN
-#sudo ovs-vsctl set Interface ovs_vxlan_MYREN type=vxlan
-#sudo ovs-vsctl set Interface ovs_vxlan_MYREN options:remote_ip=103.26.47.229
-
 sudo ovs-vsctl add-port brcap ovs_vxlan_PH
 sudo ovs-vsctl set Interface ovs_vxlan_PH type=vxlan
-sudo ovs-vsctl set Interface ovs_vxlan_PH options:remote_ip=202.90.150.28
+sudo ovs-vsctl set Interface ovs_vxlan_PH options:remote_ip=$Box_DP_IP
 
 
 elif [ $SITE = "MYREN" ]; then
-sudo ovs-vsctl add-port brdev GIST3
-sudo ovs-vsctl set Interface GIST3 type=patch
-sudo ovs-vsctl set Interface GIST3 options:peer=C_GIST3
-
 sudo ovs-vsctl add-port brdev PH
 sudo ovs-vsctl set Interface PH type=patch
 sudo ovs-vsctl set Interface PH options:peer=C_PH
-
-sudo ovs-vsctl add-port brcap C_GIST3
-sudo ovs-vsctl set Interface C_GIST3 type=patch
-sudo ovs-vsctl set Interface C_GIST3 options:peer=GIST3
 
 sudo ovs-vsctl add-port brcap C_PH
 sudo ovs-vsctl set Interface C_PH type=patch
 sudo ovs-vsctl set Interface C_PH options:peer=PH
 
-sudo ovs-vsctl add-port brcap ovs_vxlan_GIST3
-sudo ovs-vsctl set Interface ovs_vxlan_GIST3 type=vxlan
-sudo ovs-vsctl set Interface ovs_vxlan_GIST3 options:remote_ip=61.252.52.13
-
 sudo ovs-vsctl add-port brcap ovs_vxlan_PH
 sudo ovs-vsctl set Interface ovs_vxlan_PH type=vxlan
-sudo ovs-vsctl set Interface ovs_vxlan_PH options:remote_ip=202.90.150.28
+sudo ovs-vsctl set Interface ovs_vxlan_PH options:remote_ip=$Box_DP_IP
 
 
 else
@@ -159,11 +139,11 @@ sudo ovs-vsctl set Interface C_MYREN options:peer=MYREN
 # Set Overlay Tunnel Ports
 sudo ovs-vsctl add-port brcap ovs_vxlan_GIST
 sudo ovs-vsctl set Interface ovs_vxlan_GIST type=vxlan
-sudo ovs-vsctl set Interface ovs_vxlan_GIST options:remote_ip=61.252.52.11
+sudo ovs-vsctl set Interface ovs_vxlan_GIST options:remote_ip=$GIST_DP_IP
 
 sudo ovs-vsctl add-port brcap ovs_vxlan_MYREN
 sudo ovs-vsctl set Interface ovs_vxlan_MYREN type=vxlan
-sudo ovs-vsctl set Interface ovs_vxlan_MYREN options:remote_ip=103.26.47.229
+sudo ovs-vsctl set Interface ovs_vxlan_MYREN options:remote_ip=$MYREN_DP_IP
 
 sleep 5
 fi
