@@ -53,7 +53,6 @@ virsh net-autostart ovs-brvlan
 sudo virt-install --name ovs-vm --memory 1024 --disk /var/lib/libvirt/images/ovs-vm1.qcow2 --import
 
 # Manually complete VM creation and create network interfaces via virt-manager
-# Steps to create Interfaces
 # 1. Connect via virt-manager
 # 2. Add network interface with default NAT using virtio driver
 # 3. Add network interface with ovs-brvlan using virtio driver
@@ -61,4 +60,5 @@ sudo virt-install --name ovs-vm --memory 1024 --disk /var/lib/libvirt/images/ovs
 # 5. Add network interface with ovs-br-ex using virtio driver
 # 6. Add network interface with data path interface (e.g. eth3/eno4) using virtio driver
 # 7. Force off the vm and start again
-# 8. Verify the interface eth0 by pinging 192.168.122.101 from SmartX Box.
+# 8. Verify the interface eth0 by pinging 192.168.122.101 from SmartX Box
+# 9. Edit /etc/network/interface to configure all the interfaces which were created earlier
