@@ -82,10 +82,10 @@ create_ovs_vm.sh
 * controller_pwd             = OpenStack management node Box password
 
 create_ovs_bridges.sh
-* SITE                       = OpenStack Region ID
-* BRCAP_DPID                 = Set Operator bridge data path ID (e.g. )
-* BRDEV_DPID                 = Set Developer bridge data path ID (e.g. )
-* BRSDX_DPID                 = Set SDX bridge data path ID (e.g. )
+* SITE                       = OpenStack Region ID (e.g. GIST)
+* BRCAP_DPID                 = Set Operator bridge data path ID (e.g. 3333333333333313)
+* BRDEV_DPID                 = Set Developer bridge data path ID (e.g. 1111111111111113)
+* BRSDX_DPID                 = Set SDX bridge data path ID (e.g. 5555555555555513)
 * OPS_CONTROLLER             = Set Operator controller
 * DEV_CONTROLLER             = Set Developer controller
 * SDX_CONTROLLER             = Set SDX controller
