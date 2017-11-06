@@ -58,6 +58,11 @@ Git Tools
 ### SmartX Box Local Upgrade/Installation ###
 Download the installation scripts into SmartX Box and Edit the "Specific Parameter" in the appropraite Scripts
 
+install_controller.sh
+* M_IP     = OpenStack management Box IP address
+* PASSWORD = password for OpenStack keystone and Horizon services (better to use 'secrete' as password)
+
+install_smartx_box.sh
 * region   			     	 = OpenStack Region ID
 * M_IP                       = SmartX Box Management interface IP
 * C_INTERFACE                = SmartX Box Control interface name
@@ -72,6 +77,20 @@ Download the installation scripts into SmartX Box and Edit the "Specific Paramet
 * controller_pwd             = OpenStack management node Box password
 * PASSWORD                   = secrete 
 
+create_ovs_vm.sh
+* controller_ip              = OpenStack management Box IP address
+* controller_pwd             = OpenStack management node Box password
+
+create_ovs_bridges.sh
+* SITE                       = OpenStack Region ID
+* BRCAP_DPID                 = Set Operator bridge data path ID (e.g. )
+* BRDEV_DPID                 = Set Developer bridge data path ID (e.g. )
+* BRSDX_DPID                 = Set SDX bridge data path ID (e.g. )
+* OPS_CONTROLLER             = Set Operator controller
+* DEV_CONTROLLER             = Set Developer controller
+* SDX_CONTROLLER             = Set SDX controller
+* OVSVM_IP                   = OVS-VM private ip e.g. 192.168.122.101
+* OVSVM_PASSWORD             = OVS-VM password
 
 ### SmartX Box Remote Upgrade (still on Development) ###
 
@@ -91,6 +110,11 @@ Some of them maybe required specific TCP-level verification based on API/Service
 ### Clean Up, OS Upgrade, OpenStack installation (SmartX Box Installation) ###
 * ./install_smartxbox.sh
 
+### Create OVS-VM (For creating developer and operator bridges) ###
+* ./create_ovs_vm.sh
+
+### Setup SDN part (Create and configure OpenvSwitch bridges and setup Tunnels) ###
+* ./create_ovs_bridges
 
 
 ## Support and Contribution ##
