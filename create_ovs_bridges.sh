@@ -14,7 +14,7 @@
 #  See the License for the specific language governing permissions and
 #
 # Name			: O*** Install
-# Description	: Script for installing and Configuring O***
+# Description	: Script for installing and Configuring OpenvSwitch based SDN
 #
 # Created by    : Muhammad Usman
 # Version       : 0.1
@@ -47,31 +47,6 @@ if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
    exit 1
 fi
-
-# Install required software
-sudo apt-get install -y virt-manager qemu-system
-ssh-copy-id netcs@$OS_CONTROLLER <<< $OS_CONTROLLER_PASS
-
-# Copy required files
-scp netcs@$OS_CONTROLLER:/home/netcs/openstack/lubuntu-16.04.2-desktop-amd64.iso /home/tein
-scp netcs@$OS_CONTROLLER:/home/netcs/openstack/ovs-vm.qcow2 /tmp
-scp netcs@$OS_CONTROLLER:/home/netcs/openstack/ovs-bridge-brvlan.xml /home/tein
-scp netcs@$OS_CONTROLLER:/home/netcs/openstack/ovs-bridge-br-ex.xml /home/tein
-mv /tmp/ovs-vm.qcow2 /var/lib/libvirt/images/ovs-vm1.qcow2
-
-# Create virtual network
-virsh net-define /home/tein/ovs-bridge-br-ex.xml
-virsh net-define /home/tein/ovs-bridge-brvlan.xml
-virsh net-start ovs-br-ex
-virsh net-start ovs-brvlan
-virsh net-autostart ovs-br-ex
-virsh net-autostart ovs-brvlan
-
-# Create Hypervisor VM
-#sudo virt-install --connect qemu:///system -n ovs-vm1 -r 1024 -f ovs-vm1.qcow2 -s 12 -c /home/tein/lubuntu-16.04.2-desktop-amd64.iso --vnc --noautoconsole --os-type linux --accelerate --network=network:default
-sudo virt-install --name ovs-vm --memory 1024 --disk /var/lib/libvirt/images/ovs-vm1.qcow2 --import
-
-# Manually complete VM creation and create network interfaces via virt-manager
 
 # Create OpenvSwitch bridges
 ssh tein@$OVSVM_IP << EOSSH
@@ -193,6 +168,7 @@ sudo ovs-vsctl set Interface C_MYREN options:peer=MYREN
 sudo ovs-vsctl add-port brcap ovs_vxlan_GIST
 sudo ovs-vsctl set Interface ovs_vxlan_GIST type=vxlan
 sudo ovs-vsctl set Interface ovs_vxlan_GIST options:remote_ip=61.252.52.11
+
 sudo ovs-vsctl add-port brcap ovs_vxlan_MYREN
 sudo ovs-vsctl set Interface ovs_vxlan_MYREN type=vxlan
 sudo ovs-vsctl set Interface ovs_vxlan_MYREN options:remote_ip=103.26.47.229
