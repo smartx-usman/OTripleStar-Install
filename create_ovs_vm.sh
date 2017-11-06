@@ -23,8 +23,8 @@
 
 #Before execution set these parameters carefully 
 
-controller_ip=103.22.221.74
-controller_pwd='fn!xo!ska!'
+controller_ip=
+controller_pwd=
 
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
