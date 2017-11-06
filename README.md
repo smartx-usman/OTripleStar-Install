@@ -89,6 +89,9 @@ create_ovs_bridges.sh
 * OPS_CONTROLLER             = Set Operator controller
 * DEV_CONTROLLER             = Set Developer controller
 * SDX_CONTROLLER             = Set SDX controller
+* Box_DP_IP                  = SmartX Box Data path IP
+* GIST_DP_IP                 = GIST SmartX Box Data path IP
+* MYREN_DP_IP                = MYREN SmartX Box Data path IP
 * OVSVM_IP                   = OVS-VM private ip e.g. 192.168.122.101
 * OVSVM_PASSWORD             = OVS-VM password
 
@@ -114,6 +117,7 @@ Some of them maybe required specific TCP-level verification based on API/Service
 * ./create_ovs_vm.sh
 
 ### Setup SDN part (Create and configure OpenvSwitch bridges and setup Tunnels) ###
+* Note that you need to carefully run this script on multiple boxes to create appropriate ports and tunnels for proper topology setup.
 * ./create_ovs_bridges
 
 
