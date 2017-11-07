@@ -75,6 +75,7 @@ sudo init 6
 
 # Function to Upgrade OS to Ubuntu 16.04 from Ubuntu 14.04
 update_os(){
+# upgrade to Ubuntu 16.04
 apt-get -y update && apt-get -y upgrade
 apt-get -y dist-upgrade
 do-release-upgrade
