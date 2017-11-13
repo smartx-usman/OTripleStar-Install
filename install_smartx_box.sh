@@ -87,8 +87,8 @@ apt-get -y dist-upgrade
 do-release-upgrade
 
 # Update kernel version to support IO Visor
-apt-get install --install-recommends linux-generic-hwe-16.04 xserver-xorg-hwe-16.04
-apt install linux-headers-generic-hwe-16.04
+apt-get -y install --install-recommends linux-generic-hwe-16.04 xserver-xorg-hwe-16.04
+apt -y install linux-headers-generic-hwe-16.04
 
 echo "Successfully Upgrade OS to Ubuntu 16.04.3. \n"
 echo "System is going to Restart in 10sec. \n"
