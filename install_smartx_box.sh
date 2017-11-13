@@ -53,19 +53,25 @@ cd /opt/devstack
 ./unstack.sh
 ./clean.sh
 
+# Run again because with One time it left some components installed
+./unstack.sh
+./clean.sh
+
 cd ..
-rm -rf devstack
+#rm -rf devstack
 sudo rm -rf /opt/stack
 sudo rm -rf /usr/local/bin/
 sudo rm -rf /usr/local/lib/python2.7/dist-packages/*
 
+exit
+
+# Remove OpenvSwitch bridges
 ovs-vsctl del-br brvlan
 ovs-vsctl del-br br-tun
 ovs-vsctl del-br br-int
 ovs-vsctl del-br br-ex
 
 apt-get -y autoremove
-exit
 echo "Successfully Removed Existing Installation of OpenStack. \n"
 echo "System is going to Restart in 10sec. \n"
 sleep 10
