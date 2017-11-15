@@ -49,6 +49,8 @@ virsh net-start ovs-brvlan
 virsh net-autostart ovs-br-ex
 virsh net-autostart ovs-brvlan
 
+sleep 5
+
 # Create Hypervisor VM
 sudo virt-install --name ovs-vm --memory 1024 --disk /var/lib/libvirt/images/ovs-vm1.qcow2 --import
 

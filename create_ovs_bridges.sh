@@ -91,7 +91,7 @@ sudo ovs-vsctl add-port br-sdx port-1
 sleep 3
 sudo ovs-vsctl show
 
-if [ $SITE = "GIST" ]; then
+if [ $SITE = "GIST1" ]; then
 sudo ovs-vsctl add-port brdev PH
 sudo ovs-vsctl set Interface PH type=patch
 sudo ovs-vsctl set Interface PH options:peer=C_PH
@@ -120,26 +120,26 @@ sudo ovs-vsctl set Interface ovs_vxlan_PH options:remote_ip=$Box_DP_IP
 
 
 else
-sudo ovs-vsctl add-port brdev GIST
-sudo ovs-vsctl set Interface GIST type=patch
-sudo ovs-vsctl set Interface GIST options:peer=C_GIST
+sudo ovs-vsctl add-port brdev GIST1
+sudo ovs-vsctl set Interface GIST1 type=patch
+sudo ovs-vsctl set Interface GIST1 options:peer=C_GIST1
 
 sudo ovs-vsctl add-port brdev MYREN
 sudo ovs-vsctl set Interface MYREN type=patch
 sudo ovs-vsctl set Interface MYREN options:peer=C_MYREN
 
-sudo ovs-vsctl add-port brcap C_GIST
-sudo ovs-vsctl set Interface C_GIST type=patch
-sudo ovs-vsctl set Interface C_GIST options:peer=GIST
+sudo ovs-vsctl add-port brcap C_GIST1
+sudo ovs-vsctl set Interface C_GIST1 type=patch
+sudo ovs-vsctl set Interface C_GIST1 options:peer=GIST1
 
 sudo ovs-vsctl add-port brcap C_MYREN
 sudo ovs-vsctl set Interface C_MYREN type=patch
 sudo ovs-vsctl set Interface C_MYREN options:peer=MYREN
 
 # Set Overlay Tunnel Ports
-sudo ovs-vsctl add-port brcap ovs_vxlan_GIST
-sudo ovs-vsctl set Interface ovs_vxlan_GIST type=vxlan
-sudo ovs-vsctl set Interface ovs_vxlan_GIST options:remote_ip=$GIST_DP_IP
+sudo ovs-vsctl add-port brcap ovs_vxlan_GIST1
+sudo ovs-vsctl set Interface ovs_vxlan_GIST1 type=vxlan
+sudo ovs-vsctl set Interface ovs_vxlan_GIST1 options:remote_ip=$GIST_DP_IP
 
 sudo ovs-vsctl add-port brcap ovs_vxlan_MYREN
 sudo ovs-vsctl set Interface ovs_vxlan_MYREN type=vxlan
