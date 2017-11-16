@@ -81,7 +81,7 @@ sudo ovs-vsctl show
 sleep 5
 
 # Add patch port in bridge brdev inside vm
-sudo ovs-vsctl add-port brdev eth1
+sudo ovs-vsctl add-port brdev eth2
 sudo ovs-vsctl add-port brdev L3-BGP
 
 # Add patch ports in bridge br-sdx inside vm
