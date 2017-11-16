@@ -80,6 +80,13 @@ install_smartx_box.sh
 create_ovs_vm.sh
 * controller_ip              = OpenStack management Box IP address
 * controller_pwd             = OpenStack management node Box password
+* ovs_vm_mgmt_ip             = Specify the public vm of IP
+* ovs_vm_mgmt_netmask        = Specify the public vm netmask
+* ovs_vm_mgmt_gateway        = Specify the default gateway
+* ovs_vm_mgmt_dns            = 8.8.8.8
+* data_1_interface           = Specify the data plane (physical) interface name
+* data_1_ip                  = Specify the data plane (physical) IP
+* data_1_netmask             = Specify the data plane (physical) netmask
 
 create_ovs_bridges.sh
 * SITE                       = OpenStack Region ID (e.g. GIST)

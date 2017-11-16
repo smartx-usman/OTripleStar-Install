@@ -72,7 +72,13 @@ echo "*      Virtual networks created.                                  *"
 
 # Create Hypervisor VM
 echo "*      Creating virtual machine for SDN switches deployment       *"
-sudo virt-install --name ovs-vm1 --memory 1024 --disk /var/lib/libvirt/images/ovs-vm1.qcow2 --import
+sudo virt-install \
+	--name ovs-vm1 \
+	--memory 1024 \
+	--disk /var/lib/libvirt/images/ovs-vm1.qcow2 \
+	--network default,model=virtio \
+	--import
+	
 sleep 10
 echo "*       virtual machine creation completed.                      *"
 
@@ -81,13 +87,13 @@ echo "*      Creating virtual machine network interfaces               *"
 sudo virsh destroy ovs-vm1
 sleep 10
 
-sudo virsh attach-interface --domain ovs-vm --type network --source default  --model virtio --config
+#sudo virsh attach-interface --domain ovs-vm --type network --source default  --model virtio --config
+#sleep 3
+sudo virsh attach-interface --domain ovs-vm1 --type network --source ovs-br-ex  --model virtio --config
 sleep 3
-sudo virsh attach-interface --domain ovs-vm --type network --source ovs-br-ex  --model virtio --config
+sudo virsh attach-interface --domain ovs-vm1 --type network --source ovs-brvlan  --model virtio --config
 sleep 3
-sudo virsh attach-interface --domain ovs-vm --type network --source ovs-brvlan  --model virtio --config
-sleep 3
-sudo virsh attach-interface --domain ovs-vm --type direct --source $data_1_interface --model virtio --config
+sudo virsh attach-interface --domain ovs-vm1 --type direct --source $data_1_interface --model virtio --config
 sleep 3
 echo "*       virtual machine virtual interfaces creation completed.   *"
 
@@ -98,11 +104,14 @@ sleep 10
 
 echo "*       Enter Password: netmedia     *"
 #Configure Interface for Internet Connectivity
-ssh tein@$OVSVM_IP << EOSSH
+ssh tein@192.168.122.101 << EOSSH
+sudo su
 sudo echo -e "\nauto eth1 \n   iface eth1 inet static \n   address $ovs_vm_mgmt_ip \n   netmask $ovs_vm_mgmt_netmask \n   gateway $ovs_vm_mgmt_gateway\n   dns-nameservers $ovs_vm_mgmt_dns\n" >> /etc/network/interfaces
 sudo echo -e "\nauto eth2 \n   iface eth2 inet manual \n   up ifconfig eth2 up\n" >> /etc/network/interfaces
 sudo echo -e "\nauto eth3 \n   iface eth3 inet static \n   address $data_1_ip \n   netmask $data_1_netmask\n" >> /etc/network/interfaces
+init 6
 EOSSH
+sleep 10
 
 echo "*      Verify virtual machine networking                       *"
 ping -c 2 192.168.122.101
