@@ -17,7 +17,7 @@
 # Description	: Script for installing and Configuring OVS-VM
 #
 # Created by    : Muhammad Usman
-# Version       : 0.1
+# Version       : 0.2
 # Last Update	: November, 2017
 #
 
@@ -25,6 +25,20 @@
 
 controller_ip=
 controller_pwd=
+
+ovs_vm_mgmt_ip=
+ovs_vm_mgmt_netmask=
+ovs_vm_mgmt_gateway=
+ovs_vm_mgmt_dns=8.8.8.8
+
+data_1_interface=
+data_1_ip=
+data_1_netmask=
+
+#data_2_interface=
+#data_2_ip=
+#data_2_netmask=
+
 
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
@@ -36,12 +50,15 @@ sudo apt-get install -y virt-manager qemu-system
 ssh-copy-id netcs@$controller_ip <<< $controller_pwd
 
 # Copy required files
+echo "*      Be patience because 5GB data will be downloaded             *"
 scp netcs@$controller_ip:/home/netcs/openstack/ovs-vm.qcow2 /tmp
 scp netcs@$controller_ip:/home/netcs/openstack/ovs-bridge-brvlan.xml /home/tein
 scp netcs@$controller_ip:/home/netcs/openstack/ovs-bridge-br-ex.xml /home/tein
 mv /tmp/ovs-vm.qcow2 /var/lib/libvirt/images/ovs-vm1.qcow2
 
-# Create virtual network
+# Create virtual networks
+echo "*       Data download completed.                                   *"
+echo "*      Creating virtual networks                                   *"
 virsh net-define /home/tein/ovs-bridge-br-ex.xml
 virsh net-define /home/tein/ovs-bridge-brvlan.xml
 virsh net-start ovs-br-ex
@@ -50,9 +67,42 @@ virsh net-autostart ovs-br-ex
 virsh net-autostart ovs-brvlan
 
 sleep 5
+echo "*      Creating virtual machine for SDN switches deployment        *"
 
 # Create Hypervisor VM
-sudo virt-install --name ovs-vm --memory 1024 --disk /var/lib/libvirt/images/ovs-vm1.qcow2 --import
+sudo virt-install --name ovs-vm1 --memory 1024 --disk /var/lib/libvirt/images/ovs-vm1.qcow2 --import
+echo "*       virtual machine creation completed.        *"
+sleep 10
+sudo virsh destroy ovs-vm1
+sleep 5
+
+echo "*      Creating virtual machine network interfaces        *"
+sudo virsh attach-interface --domain ovs-vm --type network --source default  --model virtio --config
+sleep 3
+sudo virsh attach-interface --domain ovs-vm --type network --source ovs-br-ex  --model virtio --config
+sleep 3
+sudo virsh attach-interface --domain ovs-vm --type network --source ovs-brvlan  --model virtio --config
+sleep 3
+sudo virsh attach-interface --domain ovs-vm --type direct --source $data_1_interface --model virtio --config
+sleep 3
+
+echo "*       virtual machine virtual interfaces creation completed.     *"
+
+sudo virsh start ovs-vm1
+sleep 10
+
+ping -c 2 192.168.122.101
+ping -c 2 $ovs_vm_mgmt_ip
+
+echo "|******************************************************************| "
+echo "|                   Installation Completed.                        | "
+echo "|******************************************************************| "
+
+
+
+
+
+
 
 # Manually complete VM creation and create network interfaces via virt-manager
 # 1. Connect via virt-manager
