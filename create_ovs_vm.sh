@@ -46,8 +46,11 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # Install required software
+echo "*      Installing required software                                *"
 sudo apt-get install -y virt-manager qemu-system
 ssh-copy-id netcs@$controller_ip <<< $controller_pwd
+
+echo "*      Required software installation completed.                   *"
 
 # Copy required files
 echo "*      Be patience because 5GB data will be downloaded             *"
@@ -55,9 +58,9 @@ scp netcs@$controller_ip:/home/netcs/openstack/ovs-vm.qcow2 /tmp
 scp netcs@$controller_ip:/home/netcs/openstack/ovs-bridge-brvlan.xml /home/tein
 scp netcs@$controller_ip:/home/netcs/openstack/ovs-bridge-br-ex.xml /home/tein
 mv /tmp/ovs-vm.qcow2 /var/lib/libvirt/images/ovs-vm1.qcow2
+echo "*       Data download completed.                                   *"
 
 # Create virtual networks
-echo "*       Data download completed.                                   *"
 echo "*      Creating virtual networks                                   *"
 virsh net-define /home/tein/ovs-bridge-br-ex.xml
 virsh net-define /home/tein/ovs-bridge-brvlan.xml
@@ -65,18 +68,20 @@ virsh net-start ovs-br-ex
 virsh net-start ovs-brvlan
 virsh net-autostart ovs-br-ex
 virsh net-autostart ovs-brvlan
-
 sleep 5
-echo "*      Creating virtual machine for SDN switches deployment        *"
+echo "*      Virtual networks created.                                  *"
 
 # Create Hypervisor VM
+echo "*      Creating virtual machine for SDN switches deployment       *"
 sudo virt-install --name ovs-vm1 --memory 1024 --disk /var/lib/libvirt/images/ovs-vm1.qcow2 --import
-echo "*       virtual machine creation completed.        *"
 sleep 10
-sudo virsh destroy ovs-vm1
-sleep 5
+echo "*       virtual machine creation completed.                      *"
 
-echo "*      Creating virtual machine network interfaces        *"
+# Create virtual interfaces
+echo "*      Creating virtual machine network interfaces               *"
+sudo virsh destroy ovs-vm1
+sleep 10
+
 sudo virsh attach-interface --domain ovs-vm --type network --source default  --model virtio --config
 sleep 3
 sudo virsh attach-interface --domain ovs-vm --type network --source ovs-br-ex  --model virtio --config
@@ -85,20 +90,28 @@ sudo virsh attach-interface --domain ovs-vm --type network --source ovs-brvlan  
 sleep 3
 sudo virsh attach-interface --domain ovs-vm --type direct --source $data_1_interface --model virtio --config
 sleep 3
+echo "*       virtual machine virtual interfaces creation completed.   *"
 
-echo "*       virtual machine virtual interfaces creation completed.     *"
-
+# Start Hypervisor VM
+echo "*      Starting Hypervisor virtual machine                       *"
 sudo virsh start ovs-vm1
 sleep 10
 
+echo "*       Enter Password: netmedia     *"
+#Configure Interface for Internet Connectivity
+ssh tein@$OVSVM_IP << EOSSH
+sudo echo -e "\nauto eth1 \n   iface eth1 inet static \n   address $ovs_vm_mgmt_ip \n   netmask $ovs_vm_mgmt_netmask \n   gateway $ovs_vm_mgmt_gateway\n   dns-nameservers $ovs_vm_mgmt_dns\n" >> /etc/network/interfaces
+sudo echo -e "\nauto eth2 \n   iface eth2 inet manual \n   up ifconfig eth2 up\n" >> /etc/network/interfaces
+sudo echo -e "\nauto eth3 \n   iface eth3 inet static \n   address $data_1_ip \n   netmask $data_1_netmask\n" >> /etc/network/interfaces
+EOSSH
+
+echo "*      Verify virtual machine networking                       *"
 ping -c 2 192.168.122.101
 ping -c 2 $ovs_vm_mgmt_ip
 
 echo "|******************************************************************| "
 echo "|                   Installation Completed.                        | "
 echo "|******************************************************************| "
-
-
 
 
 
