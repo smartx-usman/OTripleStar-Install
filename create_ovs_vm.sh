@@ -54,10 +54,9 @@ echo "*      Required software installation completed.                   *"
 
 # Copy required files
 echo "*      Be patience because 5GB data will be downloaded             *"
-scp netcs@$controller_ip:/home/netcs/openstack/ovs-vm.qcow2 /tmp
+scp netcs@$controller_ip:/home/netcs/openstack/ovs-vm.qcow2 /var/lib/libvirt/images/ovs-vm1.qcow2
 scp netcs@$controller_ip:/home/netcs/openstack/ovs-bridge-brvlan.xml /home/tein
 scp netcs@$controller_ip:/home/netcs/openstack/ovs-bridge-br-ex.xml /home/tein
-mv /tmp/ovs-vm.qcow2 /var/lib/libvirt/images/ovs-vm1.qcow2
 echo "*       Data download completed.                                   *"
 
 # Create virtual networks
