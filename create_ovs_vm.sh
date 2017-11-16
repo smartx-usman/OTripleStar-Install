@@ -100,7 +100,7 @@ echo "*       virtual machine virtual interfaces creation completed.   *"
 # Start Hypervisor VM
 echo "*      Starting Hypervisor virtual machine                       *"
 sudo virsh start ovs-vm1
-sleep 10
+sleep 20
 
 echo "*       Enter Password: netmedia     *"
 #Configure Interface for Internet Connectivity
