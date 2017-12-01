@@ -47,7 +47,7 @@ fi
 
 # Install required software
 echo "*      Installing required software                                *"
-sudo apt-get install -y virt-manager qemu-system
+sudo apt-get install -y virsh virt-manager qemu-system
 ssh-copy-id netcs@$controller_ip <<< $controller_pwd
 
 echo "*      Required software installation completed.                   *"
@@ -67,7 +67,7 @@ virsh net-start ovs-br-ex
 virsh net-start ovs-brvlan
 virsh net-autostart ovs-br-ex
 virsh net-autostart ovs-brvlan
-sleep 5
+sleep 10
 echo "*      Virtual networks created.                                  *"
 
 # Create Hypervisor VM
@@ -79,28 +79,28 @@ sudo virt-install \
 	--network default,model=virtio \
 	--import
 	
-sleep 10
+sleep 30
 echo "*       virtual machine creation completed.                      *"
 
 # Create virtual interfaces
 echo "*      Creating virtual machine network interfaces               *"
 sudo virsh destroy ovs-vm1
-sleep 10
+sleep 30
 
 #sudo virsh attach-interface --domain ovs-vm --type network --source default  --model virtio --config
 #sleep 3
 sudo virsh attach-interface --domain ovs-vm1 --type network --source ovs-br-ex  --model virtio --config
-sleep 3
+sleep 5
 sudo virsh attach-interface --domain ovs-vm1 --type network --source ovs-brvlan  --model virtio --config
-sleep 3
+sleep 5
 sudo virsh attach-interface --domain ovs-vm1 --type direct --source $data_1_interface --model virtio --config
-sleep 3
+sleep 5
 echo "*       virtual machine virtual interfaces creation completed.   *"
 
 # Start Hypervisor VM
 echo "*      Starting Hypervisor virtual machine                       *"
 sudo virsh start ovs-vm1
-sleep 20
+sleep 30
 
 echo "*       Enter Password: netmedia     *"
 #Configure Interface for Internet Connectivity
@@ -111,7 +111,7 @@ sudo echo -e "\nauto eth2 \n   iface eth2 inet manual \n   up ifconfig eth2 up\n
 sudo echo -e "\nauto eth3 \n   iface eth3 inet static \n   address $data_1_ip \n   netmask $data_1_netmask\n" >> /etc/network/interfaces
 init 6
 EOSSH
-sleep 10
+sleep 30
 
 echo "*      Verify virtual machine networking                       *"
 ping -c 2 192.168.122.101
