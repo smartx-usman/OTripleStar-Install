@@ -515,9 +515,7 @@ fi
   
 # Change Permission 
 chown -R nova:nova /var/lib/nova
-
-# Discover compute hosts
-su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
+sleep 10
  
 # To install Nova LXD instead of KVM (uncomment)
 # apt-get -y install nova-compute-lxd 
@@ -527,6 +525,11 @@ service nova-consoleauth restart
 service nova-scheduler restart
 service nova-conductor restart
 service nova-novncproxy restart  
+
+# Discover compute hosts
+su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
+sleep 5
+
 service nova-compute restart
 
 # Create Flavors
