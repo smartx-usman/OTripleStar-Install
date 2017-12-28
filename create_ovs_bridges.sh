@@ -17,12 +17,12 @@
 # Description	: Script for installing and Configuring OpenvSwitch based SDN
 #
 # Created by    : Muhammad Usman
-# Version       : 0.1
-# Last Update	: November, 2017
+# Version       : 0.2
+# Last Update	: December, 2017
 #
 
 #Before execution set these parameters carefully 
-SITE=
+HUB_SITE=
 BRCAP_DPID=
 BRDEV_DPID=
 BRSDX_DPID=
@@ -34,6 +34,7 @@ SDX_CONTROLLER=
 Box_DP_IP=
 GIST_DP_IP=
 MYREN_DP_IP=
+NCKU_DP_IP=
 
 OVSVM_IP=192.168.122.101
 OVSVM_PASSWORD=netmedia
@@ -91,59 +92,48 @@ sudo ovs-vsctl add-port br-sdx port-1
 sleep 3
 sudo ovs-vsctl show
 
-if [ $SITE = "GIST1" ]; then
-sudo ovs-vsctl add-port brdev PH
-sudo ovs-vsctl set Interface PH type=patch
-sudo ovs-vsctl set Interface PH options:peer=C_PH
+if [ $HUB_SITE = "GIST1" ]; then
+sudo ovs-vsctl add-port brdev KR_GIST1
+sudo ovs-vsctl set Interface KR_GIST1 type=patch
+sudo ovs-vsctl set Interface KR_GIST1 options:peer=C_KR_GIST1
 
-sudo ovs-vsctl add-port brcap C_PH
-sudo ovs-vsctl set Interface C_PH type=patch
-sudo ovs-vsctl set Interface C_PH options:peer=PH
-
-sudo ovs-vsctl add-port brcap ovs_vxlan_PH
-sudo ovs-vsctl set Interface ovs_vxlan_PH type=vxlan
-sudo ovs-vsctl set Interface ovs_vxlan_PH options:remote_ip=$Box_DP_IP
-
-
-elif [ $SITE = "MYREN" ]; then
-sudo ovs-vsctl add-port brdev PH
-sudo ovs-vsctl set Interface PH type=patch
-sudo ovs-vsctl set Interface PH options:peer=C_PH
-
-sudo ovs-vsctl add-port brcap C_PH
-sudo ovs-vsctl set Interface C_PH type=patch
-sudo ovs-vsctl set Interface C_PH options:peer=PH
-
-sudo ovs-vsctl add-port brcap ovs_vxlan_PH
-sudo ovs-vsctl set Interface ovs_vxlan_PH type=vxlan
-sudo ovs-vsctl set Interface ovs_vxlan_PH options:remote_ip=$Box_DP_IP
-
-
-else
-sudo ovs-vsctl add-port brdev GIST1
-sudo ovs-vsctl set Interface GIST1 type=patch
-sudo ovs-vsctl set Interface GIST1 options:peer=C_GIST1
-
-sudo ovs-vsctl add-port brdev MYREN
-sudo ovs-vsctl set Interface MYREN type=patch
-sudo ovs-vsctl set Interface MYREN options:peer=C_MYREN
-
-sudo ovs-vsctl add-port brcap C_GIST1
-sudo ovs-vsctl set Interface C_GIST1 type=patch
-sudo ovs-vsctl set Interface C_GIST1 options:peer=GIST1
-
-sudo ovs-vsctl add-port brcap C_MYREN
-sudo ovs-vsctl set Interface C_MYREN type=patch
-sudo ovs-vsctl set Interface C_MYREN options:peer=MYREN
+sudo ovs-vsctl add-port brcap C_KR_GIST1
+sudo ovs-vsctl set Interface C_KR_GIST1 type=patch
+sudo ovs-vsctl set Interface C_KR_GIST1 options:peer=KR_GIST1
 
 # Set Overlay Tunnel Ports
 sudo ovs-vsctl add-port brcap ovs_vxlan_GIST1
 sudo ovs-vsctl set Interface ovs_vxlan_GIST1 type=vxlan
 sudo ovs-vsctl set Interface ovs_vxlan_GIST1 options:remote_ip=$GIST_DP_IP
 
+
+elif [ $HUB_SITE = "MYREN" ]; then
+sudo ovs-vsctl add-port brdev MY_MYREN
+sudo ovs-vsctl set Interface MY_MYREN type=patch
+sudo ovs-vsctl set Interface MY_MYREN options:peer=C_MY_MYREN
+
+sudo ovs-vsctl add-port brcap C_MY_MYREN
+sudo ovs-vsctl set Interface C_MY_MYREN type=patch
+sudo ovs-vsctl set Interface C_MY_MYREN options:peer=MY_MYREN
+
+# Set Overlay Tunnel Ports
 sudo ovs-vsctl add-port brcap ovs_vxlan_MYREN
 sudo ovs-vsctl set Interface ovs_vxlan_MYREN type=vxlan
 sudo ovs-vsctl set Interface ovs_vxlan_MYREN options:remote_ip=$MYREN_DP_IP
+
+elif [ $HUB_SITE = "NCKU" ]; then
+sudo ovs-vsctl add-port brdev TW_NCKU
+sudo ovs-vsctl set Interface TW_NCKU type=patch
+sudo ovs-vsctl set Interface TW_NCKU options:peer=C_TW_NCKU
+
+sudo ovs-vsctl add-port brcap C_TW_NCKU
+sudo ovs-vsctl set Interface C_TW_NCKU type=patch
+sudo ovs-vsctl set Interface C_TW_NCKU options:peer=TW_NCKU
+
+# Set Overlay Tunnel Ports
+sudo ovs-vsctl add-port brcap ovs_vxlan_NCKU
+sudo ovs-vsctl set Interface ovs_vxlan_NCKU type=vxlan
+sudo ovs-vsctl set Interface ovs_vxlan_NCKU options:remote_ip=$NCKU_DP_IP
 
 sleep 5
 fi
