@@ -1,4 +1,7 @@
-# README #
+# SmartX Box Triple Star Software for Type B/O Hardware's #
+Note that this repository is no longer maintained. 
+Updated can be found on https://github.com/OFTEIN-NET/Provisioning-SmartX-Box-TripleStar
+
 [SmartX Automation Framework: OTripleStarInstall] : A Linux-based Script (BASH) for automated installation of SmartX Box software O*** over OF@TEIN+ Testbed.
 
 ## Summary ##
